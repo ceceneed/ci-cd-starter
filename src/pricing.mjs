@@ -3,7 +3,7 @@ export function calculatePayable(totalCents) {
   if (!Number.isSafeInteger(totalCents) || totalCents < 0 || totalCents > 99_999_999_999) {
     throw new RangeError('金额必须是范围内的非负整数分');
   }
-  return totalCents >= 10_000 ? totalCents - 2_000 : totalCents;
+  return totalCents > 10_000 ? totalCents - 2_000 : totalCents;
 }
 
 export function parseYuan(value) {
