@@ -1,0 +1,16 @@
+{
+  "name": "ci-cd-starter",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "用满100减20理解测试、构建和部署；无需第三方依赖",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test tests/pricing.test.mjs",
+    "build": "node scripts/build.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "start": "node scripts/serve.mjs",
+    "pipeline": "node scripts/pipeline.mjs",
+    "demo:failure": "node scripts/demo-failure.mjs"
+  }
+}

@@ -1,0 +1,63 @@
+name: CI and Pages deployment
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Test, build and check artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      # 本示例没有第三方依赖，因此无需 npm install。
+      # 有依赖的真实项目通常在这里先执行 npm ci。
+      - name: Test business rules
+        run: npm test
+      - name: Build publishable files
+        run: npm run build
+      - name: Smoke test artifact locally
+        run: npm run smoke
+      - name: Upload tested Pages artifact
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy tested artifact to Pages
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    steps:
+      - name: Deploy Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Smoke test published page
+        env:
+          PAGES_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          curl --fail --location --retry 4 --retry-delay 5 --retry-all-errors --max-time 20 "$PAGES_URL" --output published.html
+          grep -q 'id="calculator"' published.html

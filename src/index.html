@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>满100减20 · CI/CD练习</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main>
+    <p class="eyebrow">购物优惠计算器</p>
+    <h1>满100元，减20元</h1>
+    <p class="intro">一张优惠券，每笔订单最多减20元。</p>
+    <form id="calculator" novalidate>
+      <label for="amount">订单金额（元）</label>
+      <div class="input-row">
+        <input id="amount" name="amount" type="text" inputmode="decimal" value="100.00" autocomplete="off" aria-describedby="hint error">
+        <button type="submit">计算应付</button>
+      </div>
+      <p id="hint">输入非负金额，最多9位整数、2位小数，不使用前导零。</p>
+      <p id="error" role="alert"></p>
+    </form>
+    <section class="result" aria-live="polite" aria-atomic="true">
+      <h2 id="payable">等待计算</h2>
+      <p id="discount"></p>
+    </section>
+  </main>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>
